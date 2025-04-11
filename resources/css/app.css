@@ -1,0 +1,137 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.bodyMain {
+    @apply flex items-center justify-center min-h-screen bg-gray-100
+}
+
+.formUtama {
+    @apply flex flex-col justify-evenly w-1/2 p-4 border rounded-xl bg-gray-50
+}
+
+.contHome {
+    @apply flex w-[90%] max-w-6xl bg-white rounded-xl shadow-lg p-6 gap-6
+}
+
+.inputCode {
+    @apply p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400
+}
+
+.submitBtn {
+    @apply bg-white font-mine font-semibold text-xl text-blue-600 border-2 border-blue-600 rounded-xl p-3 hover:bg-blue-600 hover:text-white transition ease-in-out
+}
+
+.menuBtn {
+    @apply flex flex-col w-1/2 gap-4
+}
+
+.animalBtn {
+    @apply bg-animal font-mine font-bold text-xl text-center text-white p-4 rounded-2xl shadow cursor-pointer
+}
+
+.strongBtn {
+    @apply bg-strong font-mine font-bold text-xl text-center text-white p-4 rounded-2xl shadow cursor-pointer
+}
+
+.miracleBtn {
+    @apply bg-miracle font-mine font-bold text-xl text-center text-white p-4 rounded-2xl shadow cursor-pointer
+}
+
+.catalogueCard {
+    @apply bg-white rounded-2xl shadow-lg overflow-hidden max-w-md mx-auto
+}
+
+.namaKartu {
+    @apply text-2xl sm:text-3xl font-bold text-gray-900 leading-tight
+}
+
+.rarity {
+    @apply hidden sm:inline-block text-white text-sm font-semibold px-3 py-2 rounded-full
+}
+
+.info {
+    @apply hidden sm:flex justify-between items-center mt-2
+}
+
+.goldAttack {
+    @apply bg-gold text-white text-sm font-semibold w-5 h-5 flex items-center justify-center rounded-full
+}
+
+.type {
+    @apply bg-gray-600 text-white text-sm font-semibold px-2.5 pb-0.5 rounded-full
+}
+
+.barcode {
+    @apply bg-gray-400 text-white font-bold text-xs font-mono px-2 rounded
+}
+
+.actBtnGroup {
+    @apply flex justify-between items-center mt-4
+}
+
+.delBtn {
+    @apply w-9 h-9 bg-red-500 text-white text-sm sm:text-base rounded-full hover:bg-red-600 transition flex items-center justify-center
+}
+
+.editBtn {
+    @apply w-9 h-9 bg-blue-700 text-white text-sm sm:text-base rounded-full hover:bg-blue-600 transition flex items-center justify-center
+}
+
+.useBtn {
+    @apply bg-green-500 font-semibold text-white text-sm sm:text-base px-5 py-1.5 rounded-full hover:bg-green-400 transition
+}
+
+.catalogue {
+    @apply max-w-7xl mx-auto p-4 space-y-4
+}
+
+.headerNav {
+    @apply flex flex-wrap justify-between items-center gap-3
+}
+
+.homeBtn {
+    @apply bg-gray-200 text-gray-800 font-semibold px-4 py-2 rounded-full hover:bg-gray-300
+}
+
+.filterBtn {
+    @apply bg-gray-200 font-semibold text-sm px-4 py-2 rounded-l-full hover:bg-gray-300
+}
+
+.addAnimalBtn {
+    @apply font-bold text-lg px-5 py-2 rounded-full border-2 border-animal text-animal hover:text-white hover:bg-animal transition ease-in-out
+}
+
+.addStrongBtn {
+    @apply font-bold text-lg px-5 py-2 rounded-full border-2 border-strong text-strong hover:text-white hover:bg-strong transition ease-in-out
+}
+
+.addMiracleBtn {
+    @apply font-bold text-lg px-5 py-2 rounded-full border-2 border-miracle text-miracle hover:text-white hover:bg-miracle transition ease-in-out
+}
+
+.searchGroup {
+    @apply flex items-center max-w-sm w-full gap-x-2
+}
+
+.searchInput {
+    @apply flex-1 px-4 py-2 rounded-full border border-gray-300 focus:ring focus:ring-blue-200
+}
+
+.searchBtn {
+    @apply bg-yellow-400 p-2.5 rounded-full hover:bg-yellow-500 transition text-white
+}
+
+.cardList {
+    @apply grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3
+}
+
+.saveBtn {
+    @apply w-full max-w-md bg-blue-600 text-white py-3 px-6 rounded-md hover:bg-blue-700 text-lg font-semibold
+}
+
+.cancelBtn {
+    @apply bg-red-500 p-4 text-white font-semibold rounded-lg
+}
