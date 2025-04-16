@@ -8,7 +8,7 @@ This app replaces scanner in the arcade machine, so you can use your card for pl
 - Save your card, so you can use it quickly.
 - Automatically redirecting from each card page when you use card from the catalogue. Enables using card quickly.
 
-### Soon...
-- Add filtration.
-- Add card set. Add 3 card to a set so you can use it in one click.
-- User account available for managing card set.
+### Soon... :hammer_and_wrench:
+1. Add filtration.
+2. Add card set. Add 3 card to a set so you can use it in one click.
+3. User account available for managing card set.
