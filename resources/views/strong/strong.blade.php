@@ -58,7 +58,7 @@
                     };
                 @endphp
 
-                <div class="catalogueCard animal-item" data-name="{{ strtolower($strong->nama) }}">
+                <div class="catalogueCard">
                     <img src="{{ asset('storage/' . $strong->image) }}" alt="{{ $strong->nama }}" class="w-full">
 
                     <div class="p-3">
