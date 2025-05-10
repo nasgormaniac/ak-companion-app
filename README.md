@@ -19,3 +19,4 @@ This app replaces scanner in the arcade machine, so you can use your card for pl
 - Fix input error, not showing error hint
 - Fix succes hint not showing
 - Add validation in form and controller for card code, valid code starts with "bn"
+- Fix excess 'rm' in card form
