@@ -26,7 +26,7 @@ class MiracleController extends Controller
             'rarity' => 'required|in:common,bronze,silver,gold',
             'effect' => 'required|in:None,Slot Jammer,All Big,All Doubling,All Miracle,Lucky Chance,Lucky Break,All G,All T,All P,Resurrection,G Guard,T Guard,P Guard,Mystery Miracle',
             'type' => 'required|in:speed,multi,heavy',
-            'card_code' => 'required|string|size:8',
+            'card_code' => 'required|string|size:8|regex:/^bn[\w\S]{6}$/',
             'image' => 'required|image|mimes:jpg,jpeg,png|max:1024'
         ]);
 
@@ -50,7 +50,7 @@ class MiracleController extends Controller
             'rarity' => 'required|in:common,bronze,silver,gold',
             'effect' => 'required|in:None,Slot Jammer,All Big,All Doubling,All Miracle,Lucky Chance,Lucky Break,All G,All T,All P,Resurrection,G Guard,T Guard,P Guard,Mystery Miracle',
             'type' => 'required|in:speed,multi,heavy',
-            'card_code' => 'required|string|size:8',
+            'card_code' => 'required|string|size:8|regex:/^bn[\w\S]{6}$/',
         ]);
 
         if ($request->hasFile('image')) {

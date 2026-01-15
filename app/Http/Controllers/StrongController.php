@@ -28,7 +28,7 @@ class StrongController extends Controller
             'tech_level' => 'required|in:1,2,3,4,5',
             'power_level' => 'required|in:1,2,3,4,5',
             'aura' => 'required|in:none,shining,defense,burning,evil,forest,miracle',
-            'card_code' => 'required|string|size:8',
+            'card_code' => 'required|string|size:8|regex:/^bn[\w\S]{6}$/',
             'image' => 'required|image|mimes:jpg,jpeg,png|max:1024'
         ]);
 
@@ -54,7 +54,7 @@ class StrongController extends Controller
             'tech_level' => 'required|in:1,2,3,4,5',
             'power_level' => 'required|in:1,2,3,4,5',
             'aura' => 'required|in:none,shining,defense,burning,evil,forest,miracle',
-            'card_code' => 'required|string|size:8',
+            'card_code' => 'required|string|size:8|regex:/^bn[\w\S]{6}$/',
         ]);
 
         if ($request->hasFile('image')) {
