@@ -18,7 +18,7 @@ class CardController extends Controller
     public function send(Request $request)
     {
         $validated = $request->validate([
-            'code' => ['required', 'string', 'size:8', 'regex:/^bn[a-zA-Z0-9]{6}$/'],
+            'code' => 'required|string|size:8|regex:/^bn[\w\S]{6}$/',
         ]);
 
         $cardCode = $validated['code'];
