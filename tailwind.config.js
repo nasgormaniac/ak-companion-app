@@ -19,13 +19,17 @@ export default {
                 animal: '#fe0a0a',
                 strong: '#39ce14',
                 miracle: '#029aff',
-                bronze: '#da7942',
-                silver: '#a5b7c5',
-                gold: '#EFBF04'
+                // bronzeOnly: '#da7942',
+                // silverOnly: '#a5b7c5',
+                goldOnly: '#EFBF04',
             },
             backgroundImage: {
                 ultra: 'linear-gradient(to right, #badef8, #64bff6, #0ea0d9)',
-                kaiser: 'linear-gradient(135deg, #a5b7c5 50%, #EFBF04 50%)'
+                // kaiser: 'linear-gradient(135deg, #a5b7c5 50%, #EFBF04 50%)',
+                kaiser: 'linear-gradient(90deg, #f7df82 0%, #EFBF04 30%, #a5b7c5 70%, #d2dbe3 100%)',
+                bronze: 'linear-gradient(to right, #f4c5a8, #e79a70, #da7942)',
+                silver: 'linear-gradient(to right, #d2dbe3, #bcc9d4, #a5b7c5)',
+                gold: 'linear-gradient(to right, #f7df82, #f3cf43, #EFBF04)',
             }
             // #66b5e0 --> color for gradient with kaiser(ultra color)
         },
