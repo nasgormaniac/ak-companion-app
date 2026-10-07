@@ -1,0 +1,64 @@
+{
+  "name": "ak-scanner-desktop",
+  "productName": "Animal Kaiser Scanner",
+  "version": "1.0.0",
+  "description": "Local Animal Kaiser card companion for Windows",
+  "author": "Animal Kaiser Scanner",
+  "private": true,
+  "type": "module",
+  "main": "src/main/main.cjs",
+  "scripts": {
+    "dev:renderer": "vite --host 127.0.0.1",
+    "dev:electron": "electron .",
+    "build": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/prepare-window-icon.ps1 && vite build",
+    "start": "electron .",
+    "test": "node --test",
+    "package:win": "npm run build && electron-builder --win --x64 --dir",
+    "make:win": "npm run build && electron-builder --win nsis --x64"
+  },
+  "dependencies": {
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "6.1.1",
+    "electron": "44.5.1",
+    "electron-builder": "26.17.0",
+    "vite": "8.3.2"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "build": {
+    "appId": "com.animalkaiser.scanner",
+    "productName": "Animal Kaiser Scanner",
+    "executableName": "Animal Kaiser Scanner",
+    "electronDist": "electron-cache",
+    "asar": true,
+    "directories": {
+      "output": "release",
+      "buildResources": "assets"
+    },
+    "files": [
+      "package.json",
+      "dist/**/*",
+      "src/main/**/*",
+      "src/preload/**/*",
+      "src/shared/**/*"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "assets/app.ico",
+      "artifactName": "Animal Kaiser Scanner Setup ${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "perMachine": false,
+      "createDesktopShortcut": "always",
+      "createStartMenuShortcut": true,
+      "shortcutName": "Animal Kaiser Scanner",
+      "include": "build/installer.nsh"
+    }
+  }
+}
