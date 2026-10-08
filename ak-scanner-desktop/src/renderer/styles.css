@@ -37,9 +37,9 @@
 .card-image { display: block; width: 100%; height: auto; object-fit: initial; background: transparent; }
 .image-missing { min-height: 110px; }
 .card-content { padding: 12px; }
-.card-title-row { display: flex; justify-content: space-between; align-items: initial; gap: 0; }
-.card-title-row h2 { margin: 0; overflow: initial; text-overflow: initial; white-space: initial; font-size: 24px; line-height: 1.25; font-weight: 700; color: #111827; }
-.rarity { display: inline-block; white-space: initial; padding: 8px 12px; border-radius: 9999px; font-size: 14px; line-height: 20px; font-weight: 600; color: #fff; }
+.card-title-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+.card-title-row h2 { min-width: 0; margin: 0; overflow: initial; overflow-wrap: anywhere; text-overflow: initial; white-space: initial; font-size: 24px; line-height: 1.25; font-weight: 700; color: #111827; }
+.rarity { flex: 0 0 auto; align-self: flex-start; white-space: nowrap; padding: 8px 12px; border-radius: 9999px; font-size: 14px; line-height: 20px; font-weight: 600; color: #fff; }
 .category-animal .rarity-common { background: #fe0a0a; }
 .category-strong .rarity-common { background: #39ce14; }
 .category-miracle .rarity-common { background: #029aff; }
@@ -66,4 +66,4 @@
 @media (min-width: 640px) { .card-title-row h2 { font-size: 30px; line-height: 1.25; } .card-actions .delete-action, .card-actions .edit-action, .card-actions .use-action { font-size: 16px; line-height: 24px; } }
 @media (max-width: 1023px) { .card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 767px) { .card-grid { grid-template-columns: 1fr; } }
-@media (max-width: 639px) { .rarity, .card-details { display: none; } .card-title-row h2 { font-size: 24px; } }
+@media (max-width: 639px) { .card-details { display: none; } .card-title-row h2 { font-size: 24px; } }
