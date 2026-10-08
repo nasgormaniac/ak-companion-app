@@ -5,6 +5,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const manifest = require('../package.json');
+const lockfile = require('../package-lock.json');
 
 test('Windows installer icon and NSIS release configuration', () => {
   const icon = fs.readFileSync(path.join(__dirname, '..', 'assets', 'app.ico'));
@@ -23,7 +24,8 @@ test('Windows installer icon and NSIS release configuration', () => {
     assert.equal(icon.subarray(offset, offset + 8).toString('hex'), '89504e470d0a1a0a');
   }
   assert.ok(sizes.includes(16) && sizes.includes(32) && sizes.includes(256));
-  assert.equal(manifest.version, '1.0.0');
+  assert.equal(manifest.version, lockfile.version);
+  assert.equal(manifest.version, lockfile.packages[''].version);
   assert.equal(manifest.productName, 'Animal Kaiser Scanner');
   assert.equal(manifest.build.win.target, 'nsis');
   assert.equal(manifest.build.nsis.oneClick, false);
