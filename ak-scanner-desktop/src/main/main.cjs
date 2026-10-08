@@ -3,7 +3,8 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { pathToFileURL } = require('node:url');
-const { app, BrowserWindow, dialog, ipcMain, session } = require('electron');
+const { app, BrowserWindow, dialog, ipcMain, session, shell } = require('electron');
+const { cardCatalogue } = require('../shared/links.json');
 const { GameService } = require('./gameService.cjs');
 const { readGameSettings, writeGameSettings } = require('./gameSettings.cjs');
 const { registerGameIpc } = require('./gameIpc.cjs');
@@ -47,7 +48,14 @@ function createMainWindow() {
     },
   });
 
-  mainWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    if (url === cardCatalogue) {
+      void shell.openExternal(cardCatalogue).catch(() => {
+        dialog.showMessageBox(mainWindow, { type: 'error', title: 'Card Catalogue', message: 'Could not open the card catalogue in your browser.' });
+      });
+    }
+    return { action: 'deny' };
+  });
   mainWindow.webContents.on('will-navigate', (event, navigationUrl) => {
     if (navigationUrl !== trustedFrameUrl) event.preventDefault();
   });
