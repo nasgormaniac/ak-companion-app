@@ -10,13 +10,21 @@
 @media(max-width:850px){.card-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.home-grid{gap:16px}.home-menu{padding:0}}@media(max-width:650px){.app-page{padding:14px}.home-shell{margin-top:16px;padding:20px}.home-grid{grid-template-columns:1fr}.scan-side{min-height:auto}.home-bottom{align-items:start;flex-direction:column}.card-grid{grid-template-columns:1fr}.catalogue-header h1{font-size:20px}.form-grid{grid-template-columns:1fr}.filter-controls .field{min-width:calc(50% - 8px)}}
 
 .card-catalogue-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 7px 14px;
+  border: 1px solid var(--primary);
+  border-radius: 10px;
+  background: var(--surface);
   color: var(--primary);
   font-size: 14px;
   font-weight: 700;
-  text-decoration: underline;
-  text-underline-offset: 3px;
+  text-decoration: none;
+  white-space: nowrap;
 }
-.card-catalogue-link:hover { color: var(--primary-hover); }
+.card-catalogue-link:hover { background: var(--secondary); color: var(--primary-hover); }
 .card-catalogue-link:focus-visible { outline: 3px solid var(--primary); outline-offset: 3px; border-radius: 3px; }
 
 .app-brand {
@@ -42,13 +50,13 @@
 
 /* Catalogue cards reproduce the Laravel catalogueCard and its Tailwind utilities. */
 .catalogue { width: 100%; max-width: 1280px; margin: 0 auto; padding: 16px; }
-.card-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.card-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: start; gap: 16px; }
 .catalogue-card { width: 100%; max-width: 448px; min-width: 0; margin-inline: auto; overflow: hidden; border: 0; border-radius: 16px; background: #fff; color: #111827; box-shadow: 0 10px 15px -3px rgb(0 0 0 / .1), 0 4px 6px -4px rgb(0 0 0 / .1); font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
 .card-image { display: block; width: 100%; height: auto; object-fit: initial; background: transparent; }
 .image-missing { min-height: 110px; }
 .card-content { padding: 12px; }
 .card-title-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
-.card-title-row h2 { min-width: 0; margin: 0; overflow: initial; overflow-wrap: anywhere; text-overflow: initial; white-space: initial; font-size: 24px; line-height: 1.25; font-weight: 700; color: #111827; }
+.card-title-row h2 { min-width: 0; margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 24px; line-height: 1.25; font-weight: 700; color: #111827; }
 .rarity { flex: 0 0 auto; align-self: flex-start; white-space: nowrap; padding: 8px 12px; border-radius: 9999px; font-size: 14px; line-height: 20px; font-weight: 600; color: #fff; }
 .category-animal .rarity-common { background: #fe0a0a; }
 .category-strong .rarity-common { background: #39ce14; }
