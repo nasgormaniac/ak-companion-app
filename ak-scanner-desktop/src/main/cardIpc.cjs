@@ -5,7 +5,7 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 const { CardDataError, normalizeCard } = require('./cardRepository.cjs');
 
-const CHANNELS = ['cards:list', 'cards:get', 'cards:create', 'cards:update', 'cards:delete', 'cards:image'];
+const CHANNELS = ['cards:list', 'cards:get', 'cards:random', 'cards:pick-trio', 'cards:create', 'cards:update', 'cards:delete', 'cards:image'];
 const IMAGE_NAME = /^[a-f0-9]{32}\.(?:jpg|png)$/;
 const MAX_IMAGE_BYTES = require('../shared/imageRules.json').maxBytes;
 const MAX_STORED_IMAGE_BYTES = 8 * 1024 * 1024;
@@ -142,6 +142,8 @@ function registerCardIpc({ ipcMain, mainWindow, repository, userDataPath, truste
     });
   }
   handle('cards:list', 1, (options) => repository.list(options));
+  handle('cards:random', 1, (category) => repository.random(category));
+  handle('cards:pick-trio', 2, (mode, previousIds) => repository.pickTrio(mode, previousIds));
   handle('cards:get', 1, (id) => {
     const card = repository.getById(id);
     if (!card) throw new CardDataError('CARD_NOT_FOUND', 'Card not found.');

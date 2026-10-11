@@ -41,6 +41,9 @@ test('card IPC saves and replaces owned images, lists records, and deletes both'
     const firstImage = created.data.image_path;
     assert.equal(fs.existsSync(path.join(root, 'images', firstImage)), true);
     assert.equal(call('cards:list', { category: 'animal', page: 1 }).data.total, 1);
+    assert.equal(call('cards:random', 'animal').data.id, id);
+    assert.deepEqual(call('cards:pick-trio', 'random', null).data.missing, ['strong', 'miracle']);
+    assert.equal(call('cards:pick-trio', 'invalid', null).code, 'INVALID_QUERY');
     assert.equal(call('cards:image', firstImage).data, tinyPng);
     fs.appendFileSync(path.join(root, 'images', firstImage), Buffer.alloc(1024 * 1024));
     assert.equal(call('cards:image', firstImage).ok, true);

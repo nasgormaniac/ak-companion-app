@@ -1,3 +1,4 @@
+# Installed dependencies and generated builds
 node_modules/
 dist/
 out/
@@ -7,4 +8,18 @@ release/
 electron-cache/
 builder-cache/
 .npm-cache/
+.qa-edge-profile/
+
+# Local documentation is intentionally kept off GitHub
+docs/
+
+# Local logs, settings, and database files
 *.log
+.env
+.env.*
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+*.db
+*.db-wal
+*.db-shm

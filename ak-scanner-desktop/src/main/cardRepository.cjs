@@ -101,6 +101,9 @@ function translateStorageError(error) {
   if (typeof error?.message === 'string' && error.message.includes('CHECK constraint failed')) {
     return new CardDataError('INTEGRITY_ERROR', 'Card data violates a database rule.');
   }
+  if (typeof error?.message === 'string' && error.message.includes('FOREIGN KEY constraint failed')) {
+    return new CardDataError('CARD_IN_SET', 'This card is still used in a Card Set. Delete the related Card Set first.');
+  }
   return new CardDataError('DATABASE_WRITE_FAILED', 'Could not save the card to the local database.');
 }
 
@@ -129,6 +132,74 @@ class CardRepository {
   getStoredCode(id) {
     const row = this.db.prepare('SELECT card_code FROM cards WHERE id = ?').get(requireId(id));
     return row?.card_code ?? null;
+  }
+
+  random(category, excludeId = null) {
+    if (!CATEGORIES.includes(category) || (excludeId !== null && (!Number.isSafeInteger(excludeId) || excludeId < 1))) {
+      throw new CardDataError('INVALID_QUERY', 'Invalid random card request.');
+    }
+    const available = excludeId === null
+      ? this.db.prepare('SELECT count(*) AS total FROM cards WHERE category = ?').get(category).total
+      : this.db.prepare('SELECT count(*) AS total FROM cards WHERE category = ? AND id != ?').get(category, excludeId).total;
+    if (!available) return null;
+    return excludeId === null
+      ? this.db.prepare('SELECT * FROM cards WHERE category = ? ORDER BY RANDOM() LIMIT 1').get(category)
+      : this.db.prepare('SELECT * FROM cards WHERE category = ? AND id != ? ORDER BY RANDOM() LIMIT 1').get(category, excludeId);
+  }
+
+  pickTrio(mode, previousIds = null) {
+    if (!['random', 'best'].includes(mode)
+      || (previousIds !== null && (!isPlainObject(previousIds) || CATEGORIES.some((category) => !Number.isSafeInteger(previousIds[category]) || previousIds[category] < 1)))) {
+      throw new CardDataError('INVALID_QUERY', 'Invalid random trio request.');
+    }
+    const animal = this.random('animal');
+    const strong = this.random('strong');
+    const miracle = this.random('miracle');
+    if (!animal || !strong || !miracle) {
+      return { cards: null, missing: CATEGORIES.filter((category) => !this.db.prepare('SELECT 1 FROM cards WHERE category = ? LIMIT 1').get(category)), fallback: false };
+    }
+    let chosen = { animal, strong, miracle };
+    let fallback = false;
+    if (mode === 'best') {
+      const levelField = { G: 'guts_level', T: 'tech_level', P: 'power_level' }[animal.gold_attack];
+      const matchedStrong = this.db.prepare(`SELECT * FROM cards WHERE category = 'strong' AND ${levelField} = 5 ORDER BY RANDOM() LIMIT 1`).get();
+      const matchedMiracle = this.db.prepare("SELECT * FROM cards WHERE category = 'miracle' AND card_type = ? ORDER BY RANDOM() LIMIT 1").get(animal.card_type);
+      if (matchedStrong && matchedMiracle) chosen = { animal, strong: matchedStrong, miracle: matchedMiracle };
+      else fallback = true;
+    }
+    if (previousIds && CATEGORIES.every((category) => chosen[category].id === previousIds[category])) {
+      const alternatives = CATEGORIES.filter((category) => this.db.prepare('SELECT 1 FROM cards WHERE category = ? AND id != ? LIMIT 1').get(category, previousIds[category]));
+      if (alternatives.length) {
+        if (mode === 'best' && !fallback) {
+          const levelField = { G: 'guts_level', T: 'tech_level', P: 'power_level' }[animal.gold_attack];
+          const otherStrong = this.db.prepare(`SELECT * FROM cards WHERE category = 'strong' AND ${levelField} = 5 AND id != ? ORDER BY RANDOM() LIMIT 1`).get(previousIds.strong);
+          const otherMiracle = this.db.prepare("SELECT * FROM cards WHERE category = 'miracle' AND card_type = ? AND id != ? ORDER BY RANDOM() LIMIT 1").get(animal.card_type, previousIds.miracle);
+          const otherAnimal = this.db.prepare(`
+            SELECT * FROM cards AS animal
+            WHERE animal.category = 'animal' AND animal.id != ?
+              AND EXISTS (SELECT 1 FROM cards AS strong WHERE strong.category = 'strong'
+                AND ((animal.gold_attack = 'G' AND strong.guts_level = 5)
+                  OR (animal.gold_attack = 'T' AND strong.tech_level = 5)
+                  OR (animal.gold_attack = 'P' AND strong.power_level = 5)))
+              AND EXISTS (SELECT 1 FROM cards AS miracle WHERE miracle.category = 'miracle'
+                AND miracle.card_type = animal.card_type)
+            ORDER BY RANDOM() LIMIT 1
+          `).get(previousIds.animal);
+          if (otherStrong) chosen.strong = otherStrong;
+          else if (otherMiracle) chosen.miracle = otherMiracle;
+          else if (otherAnimal) {
+            const otherLevelField = { G: 'guts_level', T: 'tech_level', P: 'power_level' }[otherAnimal.gold_attack];
+            const strongForOther = this.db.prepare(`SELECT * FROM cards WHERE category = 'strong' AND ${otherLevelField} = 5 ORDER BY RANDOM() LIMIT 1`).get();
+            const miracleForOther = this.db.prepare("SELECT * FROM cards WHERE category = 'miracle' AND card_type = ? ORDER BY RANDOM() LIMIT 1").get(otherAnimal.card_type);
+            if (strongForOther && miracleForOther) chosen = { animal: otherAnimal, strong: strongForOther, miracle: miracleForOther };
+          }
+        } else {
+          const category = alternatives[Math.floor(Math.random() * alternatives.length)];
+          chosen[category] = this.random(category, previousIds[category]);
+        }
+      }
+    }
+    return { cards: chosen, missing: [], fallback };
   }
 
   hasImage(name) {
@@ -169,6 +240,9 @@ class CardRepository {
     return this.transaction(() => {
       const current = this.getById(id);
       if (!current) throw new CardDataError('CARD_NOT_FOUND', 'Card not found.');
+      if (this.db.prepare('SELECT 1 FROM card_sets WHERE animal_card_id = ? OR strong_card_id = ? OR miracle_card_id = ? LIMIT 1').get(id, id, id)) {
+        throw new CardDataError('CARD_IN_SET', 'This card is still used in a Card Set. Delete the related Card Set first.');
+      }
       this.db.prepare('DELETE FROM cards WHERE id = ?').run(id);
       return current;
     });

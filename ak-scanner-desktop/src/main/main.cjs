@@ -4,21 +4,26 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { pathToFileURL } = require('node:url');
 const { app, BrowserWindow, dialog, ipcMain, session, shell } = require('electron');
-const { cardCatalogue } = require('../shared/links.json');
+const { cardCatalogue, tournament } = require('../shared/links.json');
 const { GameService } = require('./gameService.cjs');
 const { readGameSettings, writeGameSettings } = require('./gameSettings.cjs');
 const { registerGameIpc } = require('./gameIpc.cjs');
 const { DatabaseError, openDesktopDatabase } = require('./sqliteDatabase.cjs');
 const { CardRepository } = require('./cardRepository.cjs');
 const { registerCardIpc } = require('./cardIpc.cjs');
+const { CardSetRepository } = require('./cardSetRepository.cjs');
+const { registerCardSetIpc } = require('./cardSetIpc.cjs');
 
 const DEV_URL = 'http://127.0.0.1:5173';
+const CARD_IMAGE_REFERENCE_URL = 'https://animalkaiser.com/uk/cards/index.php';
 let mainWindow;
 let gameService;
 let unregisterIpc;
 let unregisterCardIpc;
+let unregisterCardSetIpc;
 let desktopDatabase;
 let cardRepository;
+let cardSetRepository;
 
 function createMainWindow() {
   if (unregisterIpc) {
@@ -26,6 +31,7 @@ function createMainWindow() {
     unregisterIpc = null;
   }
   if (unregisterCardIpc) { unregisterCardIpc(); unregisterCardIpc = null; }
+  if (unregisterCardSetIpc) { unregisterCardSetIpc(); unregisterCardSetIpc = null; }
   if (gameService) gameService.dispose();
   const development = !app.isPackaged && process.env.AK_SCANNER_DEV_URL === DEV_URL;
   const rendererFile = path.join(__dirname, '..', '..', 'dist', 'index.html');
@@ -49,9 +55,9 @@ function createMainWindow() {
   });
 
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
-    if (url === cardCatalogue) {
-      void shell.openExternal(cardCatalogue).catch(() => {
-        dialog.showMessageBox(mainWindow, { type: 'error', title: 'Card Catalogue', message: 'Could not open the card catalogue in your browser.' });
+    if (url === cardCatalogue || url === tournament || url === CARD_IMAGE_REFERENCE_URL) {
+      void shell.openExternal(url).catch(() => {
+        dialog.showMessageBox(mainWindow, { type: 'error', title: 'Card reference', message: 'Could not open the card reference in your browser.' });
       });
     }
     return { action: 'deny' };
@@ -83,13 +89,16 @@ function createMainWindow() {
       });
     },
   });
+  unregisterCardSetIpc = registerCardSetIpc({ ipcMain, mainWindow, repository: cardSetRepository, trustedFrameUrl });
 
   mainWindow.on('closed', () => {
     if (gameService) gameService.dispose();
     if (unregisterIpc) unregisterIpc();
     if (unregisterCardIpc) unregisterCardIpc();
+    if (unregisterCardSetIpc) unregisterCardSetIpc();
     unregisterIpc = null;
     unregisterCardIpc = null;
+    unregisterCardSetIpc = null;
     mainWindow = null;
   });
 
@@ -115,6 +124,7 @@ if (!app.requestSingleInstanceLock()) {
     session.defaultSession.setPermissionRequestHandler((_webContents, _permission, callback) => callback(false));
     desktopDatabase = openDesktopDatabase(app.getPath('userData'));
     cardRepository = new CardRepository(desktopDatabase.db);
+    cardSetRepository = new CardSetRepository(desktopDatabase.db);
     createMainWindow();
   }).catch((error) => {
     dialog.showErrorBox('Could not start Animal Kaiser Scanner', error instanceof DatabaseError ? error.message : 'The app could not start. Check its local files and try again.');
@@ -126,6 +136,7 @@ app.on('before-quit', () => {
   if (gameService) gameService.dispose();
   if (unregisterIpc) unregisterIpc();
   if (unregisterCardIpc) unregisterCardIpc();
+  if (unregisterCardSetIpc) unregisterCardSetIpc();
   if (desktopDatabase) {
     desktopDatabase.close();
     desktopDatabase = null;

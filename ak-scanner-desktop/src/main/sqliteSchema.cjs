@@ -1,6 +1,6 @@
 'use strict';
 
-const SCHEMA_VERSION = 2;
+const SCHEMA_VERSION = 3;
 
 const MIGRATIONS = Object.freeze([
   {
@@ -64,6 +64,23 @@ const MIGRATIONS = Object.freeze([
     version: 2,
     name: 'index_rarity_filters',
     sql: `CREATE INDEX cards_category_rarity_idx ON cards(category, rarity);`,
+  },
+  {
+    version: 3,
+    name: 'create_card_sets',
+    sql: `
+      CREATE TABLE card_sets (
+        id INTEGER PRIMARY KEY,
+        animal_card_id INTEGER NOT NULL REFERENCES cards(id) ON DELETE RESTRICT,
+        strong_card_id INTEGER NOT NULL REFERENCES cards(id) ON DELETE RESTRICT,
+        miracle_card_id INTEGER NOT NULL REFERENCES cards(id) ON DELETE RESTRICT,
+        created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+        updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+        UNIQUE (animal_card_id, strong_card_id, miracle_card_id)
+      );
+      CREATE INDEX card_sets_strong_idx ON card_sets(strong_card_id);
+      CREATE INDEX card_sets_miracle_idx ON card_sets(miracle_card_id);
+    `,
   },
 ]);
 

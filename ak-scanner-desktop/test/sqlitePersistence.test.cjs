@@ -31,13 +31,13 @@ function withUserData(work) {
   finally { fs.rmSync(dir, { recursive: true, force: true }); }
 }
 
-test('fresh database starts empty with only desktop cards and reopens at current version', () => withUserData((dir) => {
+test('fresh database starts empty with desktop cards and sets and reopens at current version', () => withUserData((dir) => {
   let opened = openDesktopDatabase(dir);
   try {
     assert.equal(getVersion(opened.db), SCHEMA_VERSION);
     assert.equal(opened.db.prepare('SELECT count(*) AS n FROM cards').get().n, 0);
     assert.equal(opened.db.prepare('PRAGMA foreign_keys').get().foreign_keys, 1);
-    assert.deepEqual(opened.db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'").all().map((row) => row.name), ['cards']);
+    assert.deepEqual(opened.db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'").all().map((row) => row.name), ['cards', 'card_sets']);
     assert.equal(opened.preUpgradeBackup, null);
   } finally { opened.close(); }
   opened = openDesktopDatabase(dir);

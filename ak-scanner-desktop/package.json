@@ -1,7 +1,7 @@
 {
   "name": "ak-scanner-desktop",
   "productName": "Animal Kaiser Scanner",
-  "version": "1.0.1",
+  "version": "1.2.0",
   "description": "Local Animal Kaiser card companion for Windows",
   "author": "Animal Kaiser Scanner",
   "private": true,
@@ -33,7 +33,7 @@
     "appId": "com.animalkaiser.scanner",
     "productName": "Animal Kaiser Scanner",
     "executableName": "Animal Kaiser Scanner",
-    "electronDist": "electron-cache",
+    "electronDist": "node_modules/electron/dist",
     "asar": true,
     "directories": {
       "output": "release",
